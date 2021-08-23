@@ -3,7 +3,7 @@ import bridge from '@vkontakte/vk-bridge';
 import {AdaptivityProvider, AppRoot, ScreenSpinner, View} from '@vkontakte/vkui';
 import '@vkontakte/vkui/dist/vkui.css';
 
-import Home from './panels/Home';
+import Home from './panels/home/Home';
 import AppContext from "./AppContext";
 
 const App = () => {
