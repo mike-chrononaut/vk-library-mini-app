@@ -1,0 +1,7 @@
+.emptyCover {
+    background: url(./img.png) no-repeat 100% 100%/80% auto,#c8dcfe;
+}
+
+.vkuiBanner__content {
+    justify-content: flex-start;
+}

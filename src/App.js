@@ -5,6 +5,7 @@ import '@vkontakte/vkui/dist/vkui.css';
 
 import Home from './panels/home/Home';
 import AppContext from "./AppContext";
+import SearchResults from "./panels/searchresults/SearchResults";
 
 const App = () => {
     const [activePanel, setActivePanel] = useState('home');
@@ -52,6 +53,7 @@ const App = () => {
                 <AppContext.Provider value={[context, setContext]}>
                     <View activePanel={activePanel} popout={popout}>
                         <Home id='home' go={go}/>
+                        <SearchResults id='searchresults' go={go}/>
                     </View>
                 </AppContext.Provider>
             </AppRoot>

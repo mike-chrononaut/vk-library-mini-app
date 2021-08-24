@@ -1,6 +1,16 @@
 import React, {useContext, useEffect, useState} from 'react';
 
-import {Button, Group, Header, HorizontalCell, HorizontalScroll, Panel, PanelHeader, Search} from '@vkontakte/vkui';
+import {
+    Button,
+    Group,
+    Header,
+    HorizontalCell,
+    HorizontalScroll,
+    Panel,
+    PanelHeader,
+    PanelHeaderContent,
+    Search
+} from '@vkontakte/vkui';
 import AppContext from "../../AppContext";
 import './Home.css';
 
@@ -34,22 +44,24 @@ const Home = ({id, go}) => {
         return newBooks.map((book) => {
             let imageLink = book.originalCover.replace("http:", "https:");
             return <HorizontalCell key={book.id} size='l'
-                                                      header={book.title}>
-            <img style={{width: 120, height: 165}} src={imageLink}/>
-        </HorizontalCell>});
+                                   header={book.title}>
+                <img style={{width: 120, height: 165}} src={imageLink}/>
+            </HorizontalCell>
+        });
     }
 
     const onSearchChange = (event) => {
         setSearchQuery(event.target.value);
     };
 
-    const onSearchClick = () => {
-        console.log(searchQuery);
+    const onSearchClick = (e) => {
+        setContext({...context, "searchQuery": searchQuery});
+        go(e);
     };
 
     return (<Panel id={id}>
         {context.userInfo &&
-        <PanelHeader style={{fontWeight: "bold"}}>Здравствуйте, {context.userInfo.first_name}!</PanelHeader>}
+        <PanelHeader><PanelHeaderContent>Здравствуйте, {context.userInfo.first_name}!</PanelHeaderContent></PanelHeader>}
         <Group header={<Header>Новинки</Header>}>
             <HorizontalScroll showArrows getScrollToLeft={i => i - 120} getScrollToRight={i => i + 120}>
                 <div style={{display: 'flex'}}>
@@ -65,7 +77,7 @@ const Home = ({id, go}) => {
                         type="text"
                         className="pt-0"
                         onChange={onSearchChange}/>
-                <Button size="l" style={{marginRight: "16px"}}
+                <Button data-to="searchresults" size="l" style={{marginRight: "16px"}}
                         onClick={onSearchClick}>Искать</Button>
             </div>
         </Group>
