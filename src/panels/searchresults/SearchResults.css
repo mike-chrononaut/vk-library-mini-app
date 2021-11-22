@@ -5,3 +5,7 @@
 .vkuiBanner__content {
     justify-content: flex-start;
 }
+
+.vkuiBanner__in.Banner__in {
+    cursor: pointer;
+}

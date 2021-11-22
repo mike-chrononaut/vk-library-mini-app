@@ -13,12 +13,16 @@ import {
 } from '@vkontakte/vkui';
 import AppContext from "../../AppContext";
 import './Home.css';
+import {useRouter} from "@happysanta/router";
+import {PAGE_BOOK, PAGE_SEARCH_RESULTS} from "../../routers";
 
-const Home = ({id, go}) => {
-    const [context, setContext] = useContext(AppContext);
+const Home = ({id}) => {
+    const router = useRouter();
+    const {userInfo} = useContext(AppContext);
+    const {setSearchQuery} = useContext(AppContext);
+    const {setBook} = useContext(AppContext);
 
     const [newBooks, setNewBooks] = useState([]);
-    const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
         async function loadNewBooks() {
@@ -38,14 +42,21 @@ const Home = ({id, go}) => {
         }
 
         loadNewBooks();
-    }, [])
+    }, []);
+
+    const onBookClick = (book) => {
+        setBook(book);
+        router.pushPage(PAGE_BOOK, {
+            book_id: book.id
+        });
+    }
 
     const newBooksList = () => {
         return newBooks.map((book) => {
             let imageLink = book.originalCover.replace("http:", "https:");
-            return <HorizontalCell key={book.id} size='l'
-                                   header={book.title}>
-                <img style={{width: 120, height: 165}} src={imageLink}/>
+            return <HorizontalCell key={book.id} id={book.id} size='l'
+                                   header={book.title} onClick={() => onBookClick(book)} >
+                <img style={{width: 120, height: 180}} src={imageLink}/>
             </HorizontalCell>
         });
     }
@@ -54,14 +65,13 @@ const Home = ({id, go}) => {
         setSearchQuery(event.target.value);
     };
 
-    const onSearchClick = (e) => {
-        setContext({...context, "searchQuery": searchQuery});
-        go(e);
+    const onSearchClick = () => {
+        router.pushPage(PAGE_SEARCH_RESULTS);
     };
 
     return (<Panel id={id}>
-        {context.userInfo &&
-        <PanelHeader><PanelHeaderContent>Здравствуйте, {context.userInfo.first_name}!</PanelHeaderContent></PanelHeader>}
+        {userInfo &&
+        <PanelHeader><PanelHeaderContent>Здравствуйте, {userInfo.first_name}!</PanelHeaderContent></PanelHeader>}
         <Group header={<Header>Новинки</Header>}>
             <HorizontalScroll showArrows getScrollToLeft={i => i - 120} getScrollToRight={i => i + 120}>
                 <div style={{display: 'flex'}}>
@@ -77,7 +87,7 @@ const Home = ({id, go}) => {
                         type="text"
                         className="pt-0"
                         onChange={onSearchChange}/>
-                <Button data-to="searchresults" size="l" style={{marginRight: "16px"}}
+                <Button size="l" style={{marginRight: "16px"}}
                         onClick={onSearchClick}>Искать</Button>
             </div>
         </Group>

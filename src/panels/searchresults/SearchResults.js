@@ -1,12 +1,26 @@
-import {Banner, Panel, PanelHeader, PanelHeaderBack, PanelHeaderContent, Spinner} from "@vkontakte/vkui";
+import {
+    Banner,
+    Panel,
+    PanelHeader,
+    PanelHeaderBack,
+    PanelHeaderContent,
+    Spinner,
+    Placeholder
+} from "@vkontakte/vkui";
+import { Icon56ErrorOutline } from '@vkontakte/icons';
 import React, {useContext, useEffect, useState} from "react";
 import AppContext from "../../AppContext";
 import {Virtuoso} from 'react-virtuoso';
 import './SearchResults.css';
 import emptyCover from './img.png';
+import {useRouter} from "@happysanta/router";
+import {PAGE_BOOK} from "../../routers";
+import {BookUtils} from "../../utils/BookUtils";
 
-const SearchResults = ({id, go}) => {
-    const [context, setContext] = useContext(AppContext);
+const SearchResults = ({id}) => {
+    const router = useRouter();
+    const {searchQuery, setSearchQuery} = useContext(AppContext);
+    const {setBook} = useContext(AppContext);
 
     const [books, setBooks] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -14,11 +28,15 @@ const SearchResults = ({id, go}) => {
 
     useEffect(() => {
         async function loadBooks() {
-            let newBooks = await fetch(process.env.REACT_APP_API_URL + '/catalog/search?query=' + context.searchQuery)
+            let newBooks = await fetch(process.env.REACT_APP_API_URL + '/catalog/search?query=' + searchQuery)
                 .then(result => {
                     return result.json();
                 })
                 .then(result => {
+                    if (!result.length) {
+                        setEndReached(true);
+                    }
+
                     return result;
                 })
                 .catch(e => {
@@ -30,11 +48,11 @@ const SearchResults = ({id, go}) => {
         }
 
         loadBooks();
-    }, [])
+    }, []);
 
     async function loadMoreBooks() {
         if (!endReached) {
-            await fetch(process.env.REACT_APP_API_URL + '/catalog/search?query=' + context.searchQuery + '&page=' + (currentPage + 1))
+            await fetch(process.env.REACT_APP_API_URL + '/catalog/search?query=' + searchQuery + '&page=' + (currentPage + 1))
                 .then(result => {
                     return result.json();
                 })
@@ -55,95 +73,37 @@ const SearchResults = ({id, go}) => {
         }
     }
 
-    const getBookTitle = (book) => {
-        if (book.titleInfo && !book.titleInfo.startsWith("[")) {
-            return book.title + ". " + book.titleInfo.charAt(0).toUpperCase() + book.titleInfo.slice(1);
-        } else {
-            return book.title;
-        }
+    const onBookClick = (book) => {
+        setBook(book);
+        router.pushPage(PAGE_BOOK, {
+            book_id: book.id
+        });
     }
 
-    const getAuthorFullName = (person) => {
-        if (!person.surname) {
-            return author(person);
-        }
-
-        let name = '';
-
-        if (person.surname) {
-            name += person.surname;
-        }
-
-        if (person.fullInitials) {
-            name += " " + person.fullInitials;
-        } else if (person.shortInitials) {
-            name += " " + person.shortInitials;
-        }
-
-        if (person.alias) {
-            name += " (" + person.alias + ")";
-        }
-
-        return name;
-    }
-
-    const author = (person) => {
-        if (person.shortName) {
-            let name = person.shortName;
-            if (person.romanNumerals) {
-                name += " " + person.romanNumerals;
-            }
-            return name;
-        }
-
-        if (person.shortInitials) {
-            return `${person.surname} ${person.shortInitials}`
-        }
-
-        return person.surname;
-    }
-
-    const getAllAuthors = (authors) => {
-        return authors.map((author) => {
-            let person = author.person;
-            return getAuthorFullName(person);
-        }).join();
-    }
-
-    const getSubjects = (subjects) => {
-        return subjects.map((subject) => {
-            return subject.title;
-        }).join();
-    }
-
-    const getPublishers = (publishers) => {
-        return publishers.map((publisher) => {
-            return publisher.title;
-        }).join();
-    }
-
-    const getSeries = (series) => {
-        return series.join();
+    const onBackClick = () => {
+        setSearchQuery('');
+        router.popPage();
     }
 
     return (<Panel id={id}>
-        <PanelHeader left={<PanelHeaderBack onClick={go} data-to='home' style={{paddingBottom: "16px", paddingRight: "16px"}}/>}><PanelHeaderContent>Результаты поиска</PanelHeaderContent></PanelHeader>
+        <PanelHeader left={<PanelHeaderBack onClick={onBackClick} style={{paddingBottom: "16px", paddingRight: "16px"}}/>}><PanelHeaderContent>Результаты поиска</PanelHeaderContent></PanelHeader>
+        {!books.length && endReached && <Placeholder icon={<Icon56ErrorOutline/>}>К сожалению, не удалось найти издания по данному запросу</Placeholder>}
         <Virtuoso
             useWindowScroll
             data={books}
             overscan={20}
             endReached={loadMoreBooks}
             itemContent={(index, book) => {
-                let allAuthors = getAllAuthors(book.authors ? book.authors : []);
-                let subjects = getSubjects(book.subjects ? book.subjects : []);
-                let publishers = getPublishers(book.publishers ? book.publishers : []);
-                let series = getSeries(book.seriesTitles ? book.seriesTitles : []);
+                let allAuthors = BookUtils.getAllAuthors(book.authors ? book.authors : []);
+                let subjects = BookUtils.getSubjects(book.subjects ? book.subjects : []);
+                let publishers = BookUtils.getPublishers(book.publishers ? book.publishers : []);
+                let series = BookUtils.getSeries(book.seriesTitles ? book.seriesTitles : []);
 
-                return <div>
+                return <div onClick={() => onBookClick(book)}>
                     <Banner
-                        before={<img style={{width: 120, height: 165}}
+                        before={<img style={{width: 120, height: 180}}
                                      src={book.originalCover ? book.originalCover.replace("http:", "https:") : emptyCover}/>}
-                        header={getBookTitle(book)}
+                        header={<><span>{BookUtils.getBookTitle(book)}</span><br/>{BookUtils.getBookLabel(book)}</>}
                         subheader={
                             <React.Fragment>
                                 {allAuthors && <span><b>Автор</b>: {allAuthors}<br/></span>}
