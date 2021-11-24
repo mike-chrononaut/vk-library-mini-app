@@ -16,6 +16,7 @@ import {PAGE_HOME} from "../../routers";
 import emptyCover from "../searchresults/img.png";
 import {BookUtils} from "../../utils/BookUtils";
 import './Book.css';
+import ConnectionError from "../../common/ConnectionError";
 
 const Book = ({id}) => {
     const router = useRouter();
@@ -28,6 +29,8 @@ const Book = ({id}) => {
     const [activeTab, setActiveTab] = useState('libraries');
     const [libraries, setLibraries] = useState(null);
     const [copies, setCopies] = useState(null);
+
+    const {connectionError, setConnectionError} = useContext(AppContext);
 
     useEffect(() => {
         const getCopiesSiglas = (book) => {
@@ -45,6 +48,7 @@ const Book = ({id}) => {
                     })
                     .catch(e => {
                         console.log(e);
+                        setConnectionError(true);
                         return null;
                     });
 
@@ -127,7 +131,7 @@ const Book = ({id}) => {
     return (<Panel id={id}>
         <PanelHeader left={<PanelHeaderBack onClick={onBackClick} style={{paddingBottom: "16px", paddingRight: "16px"}}/>}><PanelHeaderContent>Информация об издании</PanelHeaderContent></PanelHeader>
         {book && <><Banner
-            before={<img style={{width: 255, height: 400}}
+            before={<img className='book-cover'
                          src={book.originalCover ? book.originalCover.replace("http:", "https:") : emptyCover}/>}
             header={<><span>{BookUtils.getBookTitle(book)}</span><br/></>}
             subheader={
@@ -178,6 +182,9 @@ const Book = ({id}) => {
             </Div>}
             {(activeTab === 'annotation') && <Div><Text>{book.annotation}</Text></Div>}
         </>}
+        {connectionError &&
+        <ConnectionError/>
+        }
     </Panel>);
 }
 

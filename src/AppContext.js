@@ -9,10 +9,15 @@ export const AppInfoProvider = ({children}) => {
     const [book, setBook] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
 
+    const [token, setToken] = useState('');
+
+    const [connectionError, setConnectionError] = useState(false);
+    const [userIsLogged, setUserIsLogged] = useState(false);
+
     return (
         <AppContext.Provider value={{
-            userInfo, launchParams, book, searchQuery,
-            setUserInfo, setLaunchParams, setBook, setSearchQuery
+            userInfo, launchParams, book, searchQuery, token, connectionError, userIsLogged,
+            setUserInfo, setLaunchParams, setBook, setSearchQuery, setToken, setConnectionError, setUserIsLogged
         }}>
             {children}
         </AppContext.Provider>

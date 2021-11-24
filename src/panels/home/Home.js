@@ -1,7 +1,10 @@
 import React, {useContext, useEffect, useState} from 'react';
 
 import {
+    Avatar,
     Button,
+    CellButton,
+    Div,
     Group,
     Header,
     HorizontalCell,
@@ -9,12 +12,23 @@ import {
     Panel,
     PanelHeader,
     PanelHeaderContent,
-    Search
+    Search,
+    Text
 } from '@vkontakte/vkui';
 import AppContext from "../../AppContext";
 import './Home.css';
 import {useRouter} from "@happysanta/router";
-import {PAGE_BOOK, PAGE_SEARCH_RESULTS} from "../../routers";
+import {
+    AUTH_MODAL_CARD,
+    CONFIRM_EXIT_MODAL_CARD,
+    PAGE_BOOK,
+    PAGE_FAVORITES,
+    PAGE_SEARCH_RESULTS,
+    PAGE_SUBSCRIPTIONS
+} from "../../routers";
+import {Icon28DoorArrowRightOutline, Icon28HomeOutline, Icon28LikeOutline, Icon28Notifications} from '@vkontakte/icons';
+import ConnectionError from "../../common/ConnectionError";
+
 
 const Home = ({id}) => {
     const router = useRouter();
@@ -23,6 +37,9 @@ const Home = ({id}) => {
     const {setBook} = useContext(AppContext);
 
     const [newBooks, setNewBooks] = useState([]);
+
+    const {connectionError, setConnectionError} = useContext(AppContext);
+    const {userIsLogged} = useContext(AppContext);
 
     useEffect(() => {
         async function loadNewBooks() {
@@ -35,6 +52,7 @@ const Home = ({id}) => {
                 })
                 .catch(e => {
                     console.log(e);
+                    setConnectionError(true);
                     return [];
                 });
 
@@ -55,7 +73,7 @@ const Home = ({id}) => {
         return newBooks.map((book) => {
             let imageLink = book.originalCover.replace("http:", "https:");
             return <HorizontalCell key={book.id} id={book.id} size='l'
-                                   header={book.title} onClick={() => onBookClick(book)} >
+                                   header={book.title} onClick={() => onBookClick(book)}>
                 <img style={{width: 120, height: 180}} src={imageLink}/>
             </HorizontalCell>
         });
@@ -81,7 +99,7 @@ const Home = ({id}) => {
         </Group>
 
         <Group>
-            <div style={{display: 'flex'}}>
+            <Div style={{display: 'flex'}}>
                 <Search placeholder="Введите часть названия, автора, тему или издательство"
                         id="searchBooks"
                         type="text"
@@ -89,8 +107,35 @@ const Home = ({id}) => {
                         onChange={onSearchChange}/>
                 <Button size="l" style={{marginRight: "16px"}}
                         onClick={onSearchClick}>Искать</Button>
-            </div>
+            </Div>
         </Group>
+
+        <Group>
+            {!userIsLogged &&
+            <CellButton centered after={<Icon28HomeOutline/>}
+                        onClick={() => router.pushModal(AUTH_MODAL_CARD)}>
+                Вход в систему
+            </CellButton>
+            }
+            {userIsLogged &&
+            <Group header={<Header style={{justifyContent: "center"}}>Личный кабинет</Header>}>
+                <CellButton onClick={() => router.pushPage(PAGE_FAVORITES)} before={<Avatar><Icon28LikeOutline fill="#2d81e0"/></Avatar>}>
+                    Избранное
+                </CellButton>
+                <CellButton onClick={() => router.pushPage(PAGE_SUBSCRIPTIONS)} before={<Avatar><Icon28Notifications fill="#2d81e0"/></Avatar>}>
+                    Подписки
+                </CellButton>
+                <CellButton before={<Avatar><Icon28DoorArrowRightOutline fill="red"/></Avatar>}
+                            onClick={() => router.pushModal(CONFIRM_EXIT_MODAL_CARD)}>
+                    <Text style={{color: "red"}}>Выйти</Text>
+                </CellButton>
+            </Group>
+            }
+        </Group>
+
+        {connectionError &&
+        <ConnectionError/>
+        }
     </Panel>);
 }
 
