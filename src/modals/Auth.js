@@ -13,8 +13,10 @@ const Auth = ({id}) => {
 
     const [authResult, setAuthResult] = useState('');
 
-    const {setUserIsLogged} = useContext(AppContext);
-    const {setToken} = useContext(AppContext);
+    const {
+        setUserIsLogged,
+        setToken
+    } = useContext(AppContext);
 
     const login = () => {
         const requestOptions = {
@@ -78,14 +80,17 @@ const Auth = ({id}) => {
         ]}>
         <Group>
             <FormItem top="Логин">
-                <Input type="text" after={<Icon20User aria-hidden="true" />} onChange={onLoginChange}/>
+                <Input type="text" after={<Icon20User aria-hidden="true"/>} onChange={onLoginChange}/>
             </FormItem>
             <FormItem top="Пароль">
-                <Input type="password" after={<Icon20CheckShieldOutline aria-hidden="true" />} onChange={onPasswordChange}/>
+                <Input type="password" after={<Icon20CheckShieldOutline aria-hidden="true"/>}
+                       onChange={onPasswordChange}/>
             </FormItem>
             <FormItem>
-                {(authResult === 'success') && <Text style={{color: "green", textAlign: "center"}}>Вы успешно авторизовались в системе</Text>}
-                {(authResult === 'fail') && <Text style={{color: "red", textAlign: "center"}}>Возникла проблема при входе в систему</Text>}
+                {(authResult === 'success') &&
+                <Text style={{color: "green", textAlign: "center"}}>Вы успешно авторизовались в системе</Text>}
+                {(authResult === 'fail') &&
+                <Text style={{color: "red", textAlign: "center"}}>Возникла проблема при входе в систему</Text>}
             </FormItem>
         </Group>
     </ModalCard>;

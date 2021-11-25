@@ -3,24 +3,29 @@ import AppContext from "../../AppContext";
 import {
     Banner,
     Div,
+    HorizontalScroll,
     Link,
     Panel,
     PanelHeader,
     PanelHeaderBack,
     PanelHeaderContent,
     Tabs,
-    TabsItem, HorizontalScroll, Text
+    TabsItem,
+    Text
 } from "@vkontakte/vkui";
 import React, {useContext, useEffect, useState} from "react";
 import {PAGE_HOME} from "../../routers";
-import emptyCover from "../searchresults/img.png";
+import emptyCover from "../../common/img.png";
 import {BookUtils} from "../../utils/BookUtils";
 import './Book.css';
 import ConnectionError from "../../common/ConnectionError";
 
 const Book = ({id}) => {
     const router = useRouter();
-    const {book, setBook} = useContext(AppContext);
+    const {
+        book, setBook,
+        connectionError, setConnectionError
+    } = useContext(AppContext);
 
     const isFirstPage = useFirstPageCheck();
     const {book_id} = useParams();
@@ -29,8 +34,6 @@ const Book = ({id}) => {
     const [activeTab, setActiveTab] = useState('libraries');
     const [libraries, setLibraries] = useState(null);
     const [copies, setCopies] = useState(null);
-
-    const {connectionError, setConnectionError} = useContext(AppContext);
 
     useEffect(() => {
         const getCopiesSiglas = (book) => {
@@ -90,7 +93,7 @@ const Book = ({id}) => {
         loadBookInfo();
         saveBookCopies();
         loadBookLibraries();
-    }, [])
+    }, [book])
 
     const onBackClick = () => {
         setBook(null);
@@ -108,7 +111,7 @@ const Book = ({id}) => {
         let publishers = BookUtils.getPublishers(book.publishers ? book.publishers : []);
         let series = BookUtils.getSeries(book.seriesTitles ? book.seriesTitles : []);
 
-        return <React.Fragment>
+        return <>
             {allAuthors && <span><b>Автор</b>: {allAuthors}<br/></span>}
             {subjects && <span><b>Тематика</b>: {subjects}<br/></span>}
             {publishers && <span><b>Издательство</b>: {publishers}<br/></span>}
@@ -118,18 +121,21 @@ const Book = ({id}) => {
             {book.languages.length && <span><b>Язык</b>: {BookUtils.getLanguages(book)}<br/></span>}
             {book.isbn && <span><b>ISBN</b>: {BookUtils.getIsbnList(book)}<br/><br/></span>}
             {book.fullBiblioDescription &&
-                <>
-                    <Link onClick={() => setShowBiblioDescription(!showBiblioDescription)}>
-                        Полное библиографическое описание
-                    </Link>
-                    {showBiblioDescription && <Div dangerouslySetInnerHTML={{__html: book.fullBiblioDescription}}/>}
-                </>
+            <>
+                <Link onClick={() => setShowBiblioDescription(!showBiblioDescription)}>
+                    Полное библиографическое описание
+                </Link>
+                {showBiblioDescription && <Div dangerouslySetInnerHTML={{__html: book.fullBiblioDescription}}/>}
+            </>
             }
-        </React.Fragment>;
+        </>;
     }
 
     return (<Panel id={id}>
-        <PanelHeader left={<PanelHeaderBack onClick={onBackClick} style={{paddingBottom: "16px", paddingRight: "16px"}}/>}><PanelHeaderContent>Информация об издании</PanelHeaderContent></PanelHeader>
+        <PanelHeader left={<PanelHeaderBack onClick={onBackClick} style={{
+            paddingBottom: "16px",
+            paddingRight: "16px"
+        }}/>}><PanelHeaderContent>Информация об издании</PanelHeaderContent></PanelHeader>
         {book && <><Banner
             before={<img className='book-cover'
                          src={book.originalCover ? book.originalCover.replace("http:", "https:") : emptyCover}/>}
@@ -145,7 +151,7 @@ const Book = ({id}) => {
                         Наличие в библиотеках
                     </TabsItem>}
                     {(book.contents.length > 0) && <TabsItem onClick={() => setActiveTab('content')}
-                                                       selected={activeTab === 'content'}>
+                                                             selected={activeTab === 'content'}>
                         Содержание
                     </TabsItem>}
                     {book.annotation && <TabsItem onClick={() => setActiveTab('annotation')}
@@ -155,7 +161,8 @@ const Book = ({id}) => {
                 </HorizontalScroll>
             </Tabs>
             {(activeTab === 'libraries') && libraries && (libraries.size > 0) &&
-                <Div><ul className='district-list'>
+            <Div>
+                <ul className='district-list'>
                     {
                         Array.from(BookUtils.getCopiesDistricts(book, libraries)).map(([key, value]) => {
                             return <li key={'district-' + key}>
@@ -172,12 +179,13 @@ const Book = ({id}) => {
                     }
 
                 </ul>
-                </Div>
+            </Div>
             }
             {(activeTab === 'content') &&
             <Div>
                 <ol>
-                    {book.contents.map((content, index) => <li key={'content-' + index}>{BookUtils.getBookContentInfo(content)}</li>)}
+                    {book.contents.map((content, index) => <li
+                        key={'content-' + index}>{BookUtils.getBookContentInfo(content)}</li>)}
                 </ol>
             </Div>}
             {(activeTab === 'annotation') && <Div><Text>{book.annotation}</Text></Div>}

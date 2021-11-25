@@ -5,20 +5,22 @@ import {useRouter} from "@happysanta/router";
 import {PAGE_BOOK} from "../routers";
 import {Virtuoso} from "react-virtuoso";
 import {BookUtils} from "../utils/BookUtils";
-import emptyCover from "../panels/searchresults/img.png";
+import emptyCover from "./img.png";
 import ConnectionError from "./ConnectionError";
 import React, {useContext, useEffect, useState} from "react";
+import './BookList.css';
 
 const BookList = ({url, noBooksMessage, queryParams}) => {
     const router = useRouter();
-    const {setBook} = useContext(AppContext);
+    const {
+        setBook,
+        connectionError, setConnectionError,
+        token
+    } = useContext(AppContext);
 
     const [books, setBooks] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [endReached, setEndReached] = useState(false);
-
-    const {connectionError, setConnectionError} = useContext(AppContext);
-    const {token} = useContext(AppContext);
 
     useEffect(() => {
         async function loadBooks() {
@@ -109,7 +111,7 @@ const BookList = ({url, noBooksMessage, queryParams}) => {
                     let publishers = BookUtils.getPublishers(book.publishers ? book.publishers : []);
                     let series = BookUtils.getSeries(book.seriesTitles ? book.seriesTitles : []);
 
-                    return <div onClick={() => onBookClick(book)}>
+                    return <div onClick={() => onBookClick(book)} className="book-list">
                         <Banner
                             before={<img style={{width: 120, height: 180}}
                                          src={book.originalCover ? book.originalCover.replace("http:", "https:") : emptyCover}/>}
@@ -136,9 +138,9 @@ const BookList = ({url, noBooksMessage, queryParams}) => {
                 }}
             />
             }
-        {connectionError &&
-        <ConnectionError/>
-        }
+            {connectionError &&
+            <ConnectionError/>
+            }
         </>
     );
 }

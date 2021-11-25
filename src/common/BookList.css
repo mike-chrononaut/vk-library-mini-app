@@ -6,6 +6,6 @@
     justify-content: flex-start;
 }
 
-.vkuiBanner__in.Banner__in {
+.book-list .vkuiBanner__in.Banner__in {
     cursor: pointer;
 }

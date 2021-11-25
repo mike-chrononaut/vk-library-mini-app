@@ -119,7 +119,7 @@ export class BookUtils {
     }
 
     static getCopiesDistricts(book, librariesMap) {
-        const groupBy = function(list, keyGetter) {
+        const groupBy = function (list, keyGetter) {
             const map = new Map();
             list.forEach((item) => {
                 const key = keyGetter(item);
@@ -173,8 +173,12 @@ export class BookUtils {
     }
 
     static getBookLabel(book) {
-        let totalCount = book.copies.map((copy) => {return copy.totalCount}).reduce((a, b) => a + b, 0);
-        let availableCount = book.copies.map((copy) => {return copy.availableCount}).reduce((a, b) => a + b, 0);
+        let totalCount = book.copies.map((copy) => {
+            return copy.totalCount
+        }).reduce((a, b) => a + b, 0);
+        let availableCount = book.copies.map((copy) => {
+            return copy.availableCount
+        }).reduce((a, b) => a + b, 0);
 
         return BookUtils.getCountLabel(totalCount, availableCount);
     }

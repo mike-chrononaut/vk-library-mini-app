@@ -1,7 +1,6 @@
 import {Panel, PanelHeader, PanelHeaderBack, PanelHeaderContent} from "@vkontakte/vkui";
 import React, {useContext} from "react";
 import AppContext from "../../AppContext";
-import './SearchResults.css';
 import {useRouter} from "@happysanta/router";
 import BookList from "../../common/BookList";
 

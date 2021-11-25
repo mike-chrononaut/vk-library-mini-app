@@ -13,11 +13,12 @@ export const AppInfoProvider = ({children}) => {
 
     const [connectionError, setConnectionError] = useState(false);
     const [userIsLogged, setUserIsLogged] = useState(false);
+    const [newBooks, setNewBooks] = useState([]);
 
     return (
         <AppContext.Provider value={{
-            userInfo, launchParams, book, searchQuery, token, connectionError, userIsLogged,
-            setUserInfo, setLaunchParams, setBook, setSearchQuery, setToken, setConnectionError, setUserIsLogged
+            userInfo, launchParams, book, searchQuery, token, connectionError, userIsLogged, newBooks,
+            setUserInfo, setLaunchParams, setBook, setSearchQuery, setToken, setConnectionError, setUserIsLogged, setNewBooks
         }}>
             {children}
         </AppContext.Provider>

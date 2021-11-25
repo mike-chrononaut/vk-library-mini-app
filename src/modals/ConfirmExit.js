@@ -1,14 +1,12 @@
 import {useRouter} from "@happysanta/router";
-import {Button, FormItem, Group, Input, ModalCard, Text} from "@vkontakte/vkui";
-import React, {useContext, useState} from "react";
-import {Icon20CheckShieldOutline, Icon20User} from '@vkontakte/icons';
+import {Button, ModalCard} from "@vkontakte/vkui";
+import React, {useContext} from "react";
 import bridge from '@vkontakte/vk-bridge';
 import AppContext from "../AppContext";
 
 const ConfirmExit = ({id}) => {
     const router = useRouter();
 
-    const {userInfo} = useContext(AppContext);
     const {setUserIsLogged} = useContext(AppContext);
 
     const logout = () => {

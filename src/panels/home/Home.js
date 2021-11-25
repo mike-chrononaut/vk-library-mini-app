@@ -32,31 +32,33 @@ import ConnectionError from "../../common/ConnectionError";
 
 const Home = ({id}) => {
     const router = useRouter();
-    const {userInfo} = useContext(AppContext);
-    const {setSearchQuery} = useContext(AppContext);
-    const {setBook} = useContext(AppContext);
-
-    const [newBooks, setNewBooks] = useState([]);
-
-    const {connectionError, setConnectionError} = useContext(AppContext);
-    const {userIsLogged} = useContext(AppContext);
+    const {
+        userInfo,
+        setSearchQuery,
+        setBook,
+        connectionError, setConnectionError,
+        userIsLogged,
+        newBooks, setNewBooks
+    } = useContext(AppContext);
 
     useEffect(() => {
         async function loadNewBooks() {
-            let newBooks = await fetch(process.env.REACT_APP_API_URL + '/catalog/latest')
-                .then(result => {
-                    return result.json();
-                })
-                .then(result => {
-                    return result;
-                })
-                .catch(e => {
-                    console.log(e);
-                    setConnectionError(true);
-                    return [];
-                });
+            if (newBooks.length === 0) {
+                let newBooks = await fetch(process.env.REACT_APP_API_URL + '/catalog/latest')
+                    .then(result => {
+                        return result.json();
+                    })
+                    .then(result => {
+                        return result;
+                    })
+                    .catch(e => {
+                        console.log(e);
+                        setConnectionError(true);
+                        return [];
+                    });
 
-            setNewBooks(newBooks);
+                setNewBooks(newBooks);
+            }
         }
 
         loadNewBooks();
@@ -119,10 +121,12 @@ const Home = ({id}) => {
             }
             {userIsLogged &&
             <Group header={<Header style={{justifyContent: "center"}}>Личный кабинет</Header>}>
-                <CellButton onClick={() => router.pushPage(PAGE_FAVORITES)} before={<Avatar><Icon28LikeOutline fill="#2d81e0"/></Avatar>}>
+                <CellButton onClick={() => router.pushPage(PAGE_FAVORITES)}
+                            before={<Avatar><Icon28LikeOutline fill="#2d81e0"/></Avatar>}>
                     Избранное
                 </CellButton>
-                <CellButton onClick={() => router.pushPage(PAGE_SUBSCRIPTIONS)} before={<Avatar><Icon28Notifications fill="#2d81e0"/></Avatar>}>
+                <CellButton onClick={() => router.pushPage(PAGE_SUBSCRIPTIONS)}
+                            before={<Avatar><Icon28Notifications fill="#2d81e0"/></Avatar>}>
                     Подписки
                 </CellButton>
                 <CellButton before={<Avatar><Icon28DoorArrowRightOutline fill="red"/></Avatar>}

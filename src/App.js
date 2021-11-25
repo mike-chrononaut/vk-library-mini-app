@@ -10,9 +10,11 @@ import {useLocation, useRouter} from "@happysanta/router";
 import {
     AUTH_MODAL_CARD,
     CONFIRM_EXIT_MODAL_CARD,
-    PANEL_BOOK, PANEL_FAVORITES,
+    PANEL_BOOK,
+    PANEL_FAVORITES,
     PANEL_HOME,
-    PANEL_SEARCH_RESULTS, PANEL_SUBSCRIPTIONS,
+    PANEL_SEARCH_RESULTS,
+    PANEL_SUBSCRIPTIONS,
     VIEW_MAIN
 } from "./routers";
 import Book from "./panels/book/Book";
@@ -27,10 +29,12 @@ const App = () => {
 
     const [popout, setPopout] = useState(<ScreenSpinner size='large'/>);
 
-    const {setUserInfo} = useContext(AppContext);
-    const {setLaunchParams} = useContext(AppContext);
-    const {setToken} = useContext(AppContext);
-    const {setUserIsLogged} = useContext(AppContext);
+    const {
+        setUserInfo,
+        setLaunchParams,
+        setToken,
+        setUserIsLogged
+    } = useContext(AppContext);
 
     useEffect(() => {
         bridge.subscribe(({detail: {type, data}}) => {
