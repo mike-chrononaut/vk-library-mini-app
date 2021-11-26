@@ -1,8 +1,10 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useMemo, useState} from 'react';
 
 import {Group, Header, HorizontalCell, HorizontalScroll} from '@vkontakte/vkui';
+import {PAGE_BOOK, router} from "../routers";
+import AppContext from "../AppContext";
 
-const Books = () => {
+const NewBooks = () => {
 
     const [books, setBooks] = useState([]);
 
@@ -13,8 +15,7 @@ const Books = () => {
             })
             .then((result) => {
                 return result;
-            }).
-            catch((error) => {
+            }).catch((error) => {
                 console.log(error);
             });
 
@@ -25,11 +26,18 @@ const Books = () => {
         getBooks();
     }, []);
 
+    const {setBook} = useContext(AppContext)
+
+    const onClickBook = (book) => {
+        setBook(book)
+        router.pushPage(PAGE_BOOK)
+    }
+
     const items = useMemo(() => {
         return books.map((book) => {
             return (
                 <HorizontalCell key={book.id} size='l' header={book.title}>
-                    <img style={{width: 120, height: 180}} src={book.originalCover}/>
+                    <img style={{width: 120, height: 180}} src={book.originalCover} onClick={() => onClickBook(book)}/>
                 </HorizontalCell>
             );
         })
@@ -40,7 +48,7 @@ const Books = () => {
     return (
         <Group header={<Header> Книги </Header>}>
             <HorizontalScroll showArrows getScrollToLeft={i => i - 120} getScrollToRight={i => i + 120}>
-                <div style={{ display: 'flex' }}>
+                <div style={{display: 'flex'}}>
                     {items}
                 </div>
             </HorizontalScroll>
@@ -48,4 +56,4 @@ const Books = () => {
     )
 };
 
-export default Books;
+export default NewBooks;

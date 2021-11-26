@@ -1,28 +1,20 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, {useContext} from 'react';
 
 import {Panel, PanelHeader} from '@vkontakte/vkui';
-import Books from "./Books";
+import NewBooks from "./NewBooks";
 import SearchPanel from "./Search";
+import AppContext from "../AppContext";
 
-const Home = ({id, fetchedUser, idApp}) => (
-    <Panel id={id}>
-        <PanelHeader>This is Platonika {fetchedUser?.first_name} {fetchedUser?.last_name}</PanelHeader>
-        <Books/>
-        <SearchPanel/>
-    </Panel>
-);
+const Home = ({id, idApp}) => {
+    const {userInfo} = useContext(AppContext)
 
-Home.propTypes = {
-    id: PropTypes.string.isRequired,
-    fetchedUser: PropTypes.shape({
-        photo_200: PropTypes.string,
-        first_name: PropTypes.string,
-        last_name: PropTypes.string,
-        city: PropTypes.shape({
-            title: PropTypes.string,
-        }),
-    }),
+    return (
+        <Panel id={id}>
+            <PanelHeader>This is Platonika {userInfo?.first_name} {userInfo?.last_name}</PanelHeader>
+            <NewBooks/>
+            <SearchPanel/>
+        </Panel>
+    )
 };
 
 export default Home;

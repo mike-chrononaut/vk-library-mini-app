@@ -1,0 +1,16 @@
+.district-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.book-cover {
+    width: 255px;
+    height: 400px;
+}
+
+@media (max-width: 576px) {
+    .book-cover {
+        width: 120px;
+        height: 185px;
+    }
+}

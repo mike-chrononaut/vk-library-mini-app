@@ -1,0 +1,11 @@
+.emptyCover {
+    background: url(src/common/img.png) no-repeat 100% 100%/80% auto,#c8dcfe;
+}
+
+.vkuiBanner__content {
+    justify-content: flex-start;
+}
+
+.book-list .vkuiBanner__in.Banner__in {
+    cursor: pointer;
+}
