@@ -18,11 +18,13 @@
     "react-scripts": "^4.0.3"
   },
   "dependencies": {
+    "@happysanta/router": "0.2.2",
+    "bootstrap": "4.5.3",
     "@vkontakte/icons": "^1.92.0",
     "@vkontakte/vk-bridge": "^2.4.8",
     "@vkontakte/vk-miniapps-deploy": "0.0.25",
     "@vkontakte/vkjs": "^0.22.1",
-    "@vkontakte/vkui": "^4.5.0",
+    "@vkontakte/vkui": "4.22.1",
     "babel-eslint": "^10.1.0",
     "chalk": "^4.1.0",
     "eruda": "^2.4.1",
@@ -30,7 +32,8 @@
     "eruda-dom": "^2.0.0",
     "prop-types": "^15.7.2",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "react-virtuoso": "1.10.8"
   },
   "browserslist": {
     "production": [
