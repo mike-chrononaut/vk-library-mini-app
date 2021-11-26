@@ -2,6 +2,7 @@ import React, {useContext, useEffect} from 'react';
 
 import {
     Button,
+    CellButton,
     Div,
     Group,
     Header,
@@ -15,7 +16,8 @@ import {
 import AppContext from "../../AppContext";
 import './Home.css';
 import {useRouter} from "@happysanta/router";
-import {PAGE_BOOK, PAGE_SEARCH_RESULTS} from "../../routers";
+import {AUTH_MODAL_CARD, PAGE_BOOK, PAGE_SEARCH_RESULTS} from "../../routers";
+import {Icon28HomeOutline} from '@vkontakte/icons';
 import ConnectionError from "../../common/ConnectionError";
 
 
@@ -98,6 +100,13 @@ const Home = ({id}) => {
                 <Button size="l" style={{marginRight: "16px"}}
                         onClick={onSearchClick}>Искать</Button>
             </Div>
+        </Group>
+
+        <Group>
+            <CellButton centered after={<Icon28HomeOutline/>}
+                        onClick={() => router.pushModal(AUTH_MODAL_CARD)}>
+                Вход в систему
+            </CellButton>
         </Group>
 
         {connectionError &&

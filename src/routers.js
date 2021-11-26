@@ -10,6 +10,8 @@ export const PANEL_HOME = 'panel_home';
 export const PANEL_SEARCH_RESULTS = 'panel_search_results';
 export const PANEL_BOOK = 'panel_book';
 
+export const AUTH_MODAL_CARD = 'auth_modal_card';
+
 const routes = {
     [PAGE_HOME]: new Page(PANEL_HOME, VIEW_MAIN),
     [PAGE_SEARCH_RESULTS]: new Page(PANEL_SEARCH_RESULTS, VIEW_MAIN),

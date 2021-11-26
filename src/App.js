@@ -1,13 +1,15 @@
 import React, {useContext, useEffect, useState} from 'react';
 import bridge from '@vkontakte/vk-bridge';
-import {AdaptivityProvider, AppRoot, ScreenSpinner, View} from '@vkontakte/vkui';
+import {AdaptivityProvider, AppRoot, ModalRoot, ScreenSpinner, View} from '@vkontakte/vkui';
 import '@vkontakte/vkui/dist/vkui.css';
+
 import Home from './panels/home/Home';
 import AppContext from "./AppContext";
-import {useLocation, useRouter} from "@happysanta/router";
-import {PANEL_BOOK, PANEL_HOME, PANEL_SEARCH_RESULTS, VIEW_MAIN} from "./routers";
 import SearchResults from "./panels/searchresults/SearchResults";
+import {useLocation, useRouter} from "@happysanta/router";
+import {AUTH_MODAL_CARD, PANEL_BOOK, PANEL_HOME, PANEL_SEARCH_RESULTS, VIEW_MAIN} from "./routers";
 import Book from "./panels/book/Book";
+import Auth from "./modals/Auth";
 
 const App = () => {
     const location = useLocation();
@@ -17,7 +19,9 @@ const App = () => {
 
     const {
         setUserInfo,
-        setLaunchParams
+        setLaunchParams,
+        setToken,
+        setUserIsLogged
     } = useContext(AppContext);
 
     useEffect(() => {
@@ -48,8 +52,28 @@ const App = () => {
             setLaunchParams(launchParams);
         }
 
+        async function checkLoginToken() {
+            await bridge.send("VKWebAppStorageGet", {"keys": ["token"]})
+                .then(result => {
+                    if (result && result.keys && (result.keys.length > 0)) {
+                        let userToken = result.keys.find(pair => (pair.key === 'token'));
+
+                        if (userToken && userToken.value) {
+                            setToken(userToken.value);
+                            setUserIsLogged(true);
+                        }
+                    }
+                });
+        }
+
         populateContext();
+        checkLoginToken();
     }, []);
+
+    const modal = <ModalRoot activeModal={location.getModalId()}
+                             onClose={() => router.popPage()}>
+        <Auth id={AUTH_MODAL_CARD} onClose={() => router.popPage()}/>
+    </ModalRoot>;
 
     return (
         <AdaptivityProvider>
@@ -58,6 +82,7 @@ const App = () => {
                       onSwipeBack={() => router.popPage()}
                       history={location.getViewHistory(VIEW_MAIN)}
                       activePanel={location.getViewActivePanel(VIEW_MAIN)}
+                      modal={modal}
                       popout={popout}>
                     <Home id={PANEL_HOME}/>
                     <SearchResults id={PANEL_SEARCH_RESULTS}/>
