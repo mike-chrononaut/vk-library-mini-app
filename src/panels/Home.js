@@ -1,13 +1,19 @@
 import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
-import { Panel, PanelHeader, Header, Button, Group, Cell, Div, Avatar, CardScroll, Card, FormItem, Input } from '@vkontakte/vkui';
+import './Home.css'
+import { Panel, PanelHeader, Header, Button, Group, Cell, Div, Avatar, CardScroll, Card, FormItem, Input, Search } from '@vkontakte/vkui';
 import AppContext from '../AppContext';
+import { useRouter } from '@happysanta/router';
+import { PAGE_BOOK, PAGE_SEARCH } from '../routes';
 
 const Home = ({ id }) => {
+	const router = useRouter()
+
 	const {userInfo, launchParams} = useContext(AppContext)
-	const [page, setPage] = useState(1)
+	const {searchQuery, setSearchQuery} = useContext(AppContext)
 	const [books, setBooks] = useState([])
+	const [searchInputValue, setSearchInputValue] = useState([])
 
 	useEffect(() => {
 		async function loadBookList() {
@@ -18,19 +24,30 @@ const Home = ({ id }) => {
 			const resp = await fetch(url)
 			const books = await resp.json()
 			setBooks(books)
+			// setFilteredBooks(books)
 		}
 
 		loadBookList()
 	}, [])
 
+	// const filterBookList = (value = '') => {
+	// 	// setFilteredBooks(books.filter(n => n.title.toLowerCase().includes(value.toLowerCase()) ))
+	// }
+
 	const onSearchChange = (event) => {
-		console.log(event.target.value)
+		setSearchQuery(event.target.value)
+		// filterBookList(event.target.value)
+	}
+
+	const onSearchClicked = (event) => {
+		// console.log(searchInputValue)
+		router.pushPage(PAGE_SEARCH)
 	}
 
 	return (
 	<Panel>
 		<PanelHeader>{ userInfo && launchParams && <span>Привет, {userInfo.first_name}</span>}</PanelHeader>
-		<Group description="Последние книги">
+		<Group>
 			<CardScroll size="s">
 				{books && books.map(b => { return(
 					<Card style={{width: '150px'}} key={b.id}>
@@ -38,9 +55,14 @@ const Home = ({ id }) => {
 					</Card>
 				)})}
 			</CardScroll>
-			<FormItem>
-				<Input onChange={onSearchChange} type="text" placeholder='Поиск' defaultValue="" align="center" />
-			</FormItem>
+		</Group>
+		<Group>
+			<Div style={{display: 'flex'}}>
+			{/* <FormItem> */}
+				<Search onChange={onSearchChange} type="text" placeholder='Название книги...' defaultValue="" align="center" />
+				<Button onClick={onSearchClicked}>Найти</Button>
+			</Div>
+			{/* </FormItem> */}
 		</Group>
 		{/* 
 		{fetchedUser &&

@@ -5,9 +5,16 @@ import '@vkontakte/vkui/dist/vkui.css';
 
 import Home from './panels/Home';
 import AppContext from './AppContext';
+import { useLocation, useRouter } from '@happysanta/router';
+import { PANEL_BOOK, PANEL_HOME, PANEL_SEARCH, VIEW_MAIN } from './routes';
+import SearchResults from './panels/SearchResults';
+import Book from './panels/Book';
 // import Persik from './panels/Persik';
 
 const App = () => {
+	const location = useLocation()
+	const router = useRouter()
+
 	const [activePanel, setActivePanel] = useState('home');
 	// const [fetchedUser, setUser] = useState(null);
 	const [popout, setPopout] = useState(<ScreenSpinner size='large' />);
@@ -59,13 +66,23 @@ const App = () => {
 	return (
 		<AdaptivityProvider>
 			<AppRoot>
-				<View activePanel={activePanel} popout={popout}>
+				<View id={VIEW_MAIN}
+					onSwipeBack={() => router.popPage()}
+					history={location.getViewHistory(VIEW_MAIN)}
+					activePanel={location.getViewActivePanel(VIEW_MAIN)}
+					popout={popout}
+				>
+					<Home id={PANEL_HOME}></Home>
+					<Book id={PANEL_BOOK}></Book>
+					<SearchResults id={PANEL_SEARCH}></SearchResults>
+				</View>
+				{/* <View activePanel={activePanel} popout={popout}> */}
 				{/* {name} */}
 					{/* <Home /> */}
-					<Home id='home' />
+					{/* <Home id='home' /> */}
 					{/* <Home id='home' fetchedUser={fetchedUser} go={go} /> */}
 					{/* <Persik id='persik' go={go} /> */}
-				</View>
+				{/* </View> */}
 			</AppRoot>
 		</AdaptivityProvider>
 	);
