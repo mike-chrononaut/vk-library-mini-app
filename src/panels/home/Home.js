@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect} from 'react';
 
 import {
     Button,
@@ -12,18 +12,22 @@ import {
     PanelHeaderContent,
     Search
 } from '@vkontakte/vkui';
+import AppContext from "../../AppContext";
 import './Home.css';
-import AppContext from "../AppContext";
-import ConnectionError from "../common/ConnectionError";
+import {useRouter} from "@happysanta/router";
+import {PAGE_BOOK, PAGE_SEARCH_RESULTS} from "../../routers";
+import ConnectionError from "../../common/ConnectionError";
+
 
 const Home = ({id}) => {
+    const router = useRouter();
     const {
         userInfo,
-        connectionError, setConnectionError
+        setSearchQuery,
+        setBook,
+        connectionError, setConnectionError,
+        newBooks, setNewBooks
     } = useContext(AppContext);
-
-    const [searchQuery, setSearchQuery] = useState('');
-    const [newBooks, setNewBooks] = useState([]);
 
     useEffect(() => {
         async function loadNewBooks() {
@@ -48,11 +52,18 @@ const Home = ({id}) => {
         loadNewBooks();
     }, []);
 
+    const onBookClick = (book) => {
+        setBook(book);
+        router.pushPage(PAGE_BOOK, {
+            book_id: book.id
+        });
+    }
+
     const newBooksList = () => {
         return newBooks.map((book) => {
             let imageLink = book.originalCover.replace("http:", "https:");
-            return <HorizontalCell key={book.id} id={book.id}
-                                   size='l' header={book.title}>
+            return <HorizontalCell key={book.id} id={book.id} size='l'
+                                   header={book.title} onClick={() => onBookClick(book)}>
                 <img style={{width: 120, height: 180}} src={imageLink}/>
             </HorizontalCell>
         });
@@ -63,7 +74,7 @@ const Home = ({id}) => {
     };
 
     const onSearchClick = () => {
-        console.log(searchQuery);
+        router.pushPage(PAGE_SEARCH_RESULTS);
     };
 
     return (<Panel id={id}>
