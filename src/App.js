@@ -27,14 +27,11 @@ const App = () => {
 		fetchData();
 	}, []);
 
-	console.log(fetchedUser)
-	console.log(new URLSearchParams(window.location.href).get('vk_app_id'))
-
 	return (
 		<AdaptivityProvider>
 			<AppRoot>
 				<View activePanel={activePanel} popout={popout}>
-					<Home id='home' fetchedUser={fetchedUser} idApp={new URLSearchParams(window.location.href).get('vk_app_id')}/>
+					<Home id='home' fetchedUser={fetchedUser} idApp={new URLSearchParams(window.location.search).get('vk_app_id')}/>
 				</View>
 			</AppRoot>
 		</AdaptivityProvider>
