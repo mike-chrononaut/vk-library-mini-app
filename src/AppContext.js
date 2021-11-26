@@ -7,10 +7,12 @@ export const AppInfoProvider = ({children}) => {
     const [userInfo, setUserInfo] = useState(null);
     const [launchParams, setLaunchParams] = useState(null);
 
+    const [connectionError, setConnectionError] = useState(false);
+
     return (
         <AppContext.Provider value={{
-            userInfo, launchParams,
-            setUserInfo, setLaunchParams
+            userInfo, launchParams, connectionError,
+            setUserInfo, setLaunchParams, setConnectionError
         }}>
             {children}
         </AppContext.Provider>
