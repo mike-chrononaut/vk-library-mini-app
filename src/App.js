@@ -20,7 +20,6 @@ const App = () => {
 		});
 		async function fetchData() {
 			const user = await bridge.send('VKWebAppGetUserInfo');
-			const appInfo = await bridge.send('VKWebAppIn');
 			setUser(user);
 			setPopout(null);
 		}
