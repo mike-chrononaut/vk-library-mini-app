@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import bridge from '@vkontakte/vk-bridge';
-import { View, ScreenSpinner, AdaptivityProvider, AppRoot } from '@vkontakte/vkui';
+import {AdaptivityProvider, AppRoot, ScreenSpinner, View} from '@vkontakte/vkui';
 import '@vkontakte/vkui/dist/vkui.css';
 
 import Home from './panels/Home';
-import Persik from './panels/Persik';
 
 const App = () => {
 	const [activePanel, setActivePanel] = useState('home');
@@ -21,22 +20,21 @@ const App = () => {
 		});
 		async function fetchData() {
 			const user = await bridge.send('VKWebAppGetUserInfo');
+			const appInfo = await bridge.send('VKWebAppIn');
 			setUser(user);
 			setPopout(null);
 		}
 		fetchData();
 	}, []);
 
-	const go = e => {
-		setActivePanel(e.currentTarget.dataset.to);
-	};
+	console.log(fetchedUser)
+	console.log(new URLSearchParams(window.location.href).get('vk_app_id'))
 
 	return (
 		<AdaptivityProvider>
 			<AppRoot>
 				<View activePanel={activePanel} popout={popout}>
-					<Home id='home' fetchedUser={fetchedUser} go={go} />
-					<Persik id='persik' go={go} />
+					<Home id='home' fetchedUser={fetchedUser} idApp={new URLSearchParams(window.location.href).get('vk_app_id')}/>
 				</View>
 			</AppRoot>
 		</AdaptivityProvider>
