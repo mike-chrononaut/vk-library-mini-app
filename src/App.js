@@ -8,7 +8,7 @@ import Home from './panels/Home';
 const App = () => {
 	const [activePanel, setActivePanel] = useState('home');
 	const [fetchedUser, setUser] = useState(null);
-	const [popout, setPopout] = useState(<ScreenSpinner size='large' />);
+	const [popout, setPopout] = useState(<ScreenSpinner size='large'/>);
 
 	useEffect(() => {
 		bridge.subscribe(({ detail: { type, data }}) => {
@@ -27,11 +27,13 @@ const App = () => {
 		fetchData();
 	}, []);
 
+	const vkAppId = new URLSearchParams(window.location.search).get('vk_app_id');
+
 	return (
 		<AdaptivityProvider>
 			<AppRoot>
 				<View activePanel={activePanel} popout={popout}>
-					<Home id='home' fetchedUser={fetchedUser} idApp={new URLSearchParams(window.location.search).get('vk_app_id')}/>
+					<Home id='home' fetchedUser={fetchedUser} idApp={vkAppId}/>
 				</View>
 			</AppRoot>
 		</AdaptivityProvider>

@@ -7,7 +7,8 @@
     "start": "cross-env PORT=10888 HTTPS=true react-scripts start",
     "build": "react-scripts build",
     "predeploy": "npm run build",
-    "deploy": "vk-miniapps-deploy"
+    "deploy": "vk-miniapps-deploy",
+    "deployDev": "cross-env MINI_APPS_ACCESS_TOKEN=5ebb28d95ebb28d95ebb28d9ca5ec113f255ebb5ebb28d93f1bbd55a3e86949ea3d02bd MINI_APPS_ENVIRONMENT=dev vk-miniapps-deploy"
   },
   "keywords": [],
   "author": "",
