@@ -14,7 +14,8 @@ const BookList = ({url, noBooksMessage, queryParams}) => {
     const router = useRouter();
     const {
         setBook,
-        connectionError, setConnectionError
+        connectionError, setConnectionError,
+        token
     } = useContext(AppContext);
 
     const [books, setBooks] = useState([]);
@@ -23,7 +24,15 @@ const BookList = ({url, noBooksMessage, queryParams}) => {
 
     useEffect(() => {
         async function loadBooks() {
-            let newBooks = await fetch(process.env.REACT_APP_API_URL + url + "?" + queryParams)
+            const requestOptions = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-csrf-token': token
+                }
+            };
+
+            let newBooks = await fetch(process.env.REACT_APP_API_URL + url + "?" + queryParams, requestOptions)
                 .then(result => {
                     return result.json();
                 })
@@ -51,8 +60,16 @@ const BookList = ({url, noBooksMessage, queryParams}) => {
 
     async function loadMoreBooks() {
         if (!endReached) {
+            const requestOptions = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-csrf-token': token
+                }
+            };
+
             await fetch(process.env.REACT_APP_API_URL + url + '?' + queryParams +
-                (queryParams ? '&' : '') + 'page=' + (currentPage + 1))
+                (queryParams ? '&' : '') + 'page=' + (currentPage + 1), requestOptions)
                 .then(result => {
                     return result.json();
                 })

@@ -1,6 +1,7 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 
 import {
+    Avatar,
     Button,
     CellButton,
     Div,
@@ -11,13 +12,21 @@ import {
     Panel,
     PanelHeader,
     PanelHeaderContent,
-    Search
+    Search,
+    Text
 } from '@vkontakte/vkui';
 import AppContext from "../../AppContext";
 import './Home.css';
 import {useRouter} from "@happysanta/router";
-import {AUTH_MODAL_CARD, PAGE_BOOK, PAGE_SEARCH_RESULTS} from "../../routers";
-import {Icon28HomeOutline} from '@vkontakte/icons';
+import {
+    AUTH_MODAL_CARD,
+    CONFIRM_EXIT_MODAL_CARD,
+    PAGE_BOOK,
+    PAGE_FAVORITES,
+    PAGE_SEARCH_RESULTS,
+    PAGE_SUBSCRIPTIONS
+} from "../../routers";
+import {Icon28DoorArrowRightOutline, Icon28HomeOutline, Icon28LikeOutline, Icon28Notifications} from '@vkontakte/icons';
 import ConnectionError from "../../common/ConnectionError";
 
 
@@ -28,6 +37,7 @@ const Home = ({id}) => {
         setSearchQuery,
         setBook,
         connectionError, setConnectionError,
+        userIsLogged,
         newBooks, setNewBooks
     } = useContext(AppContext);
 
@@ -103,10 +113,28 @@ const Home = ({id}) => {
         </Group>
 
         <Group>
+            {!userIsLogged &&
             <CellButton centered after={<Icon28HomeOutline/>}
                         onClick={() => router.pushModal(AUTH_MODAL_CARD)}>
                 Вход в систему
             </CellButton>
+            }
+            {userIsLogged &&
+            <Group header={<Header style={{justifyContent: "center"}}>Личный кабинет</Header>}>
+                <CellButton onClick={() => router.pushPage(PAGE_FAVORITES)}
+                            before={<Avatar><Icon28LikeOutline fill="#2d81e0"/></Avatar>}>
+                    Избранное
+                </CellButton>
+                <CellButton onClick={() => router.pushPage(PAGE_SUBSCRIPTIONS)}
+                            before={<Avatar><Icon28Notifications fill="#2d81e0"/></Avatar>}>
+                    Подписки
+                </CellButton>
+                <CellButton before={<Avatar><Icon28DoorArrowRightOutline fill="red"/></Avatar>}
+                            onClick={() => router.pushModal(CONFIRM_EXIT_MODAL_CARD)}>
+                    <Text style={{color: "red"}}>Выйти</Text>
+                </CellButton>
+            </Group>
+            }
         </Group>
 
         {connectionError &&

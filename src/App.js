@@ -7,9 +7,21 @@ import Home from './panels/home/Home';
 import AppContext from "./AppContext";
 import SearchResults from "./panels/searchresults/SearchResults";
 import {useLocation, useRouter} from "@happysanta/router";
-import {AUTH_MODAL_CARD, PANEL_BOOK, PANEL_HOME, PANEL_SEARCH_RESULTS, VIEW_MAIN} from "./routers";
+import {
+    AUTH_MODAL_CARD,
+    CONFIRM_EXIT_MODAL_CARD,
+    PANEL_BOOK,
+    PANEL_FAVORITES,
+    PANEL_HOME,
+    PANEL_SEARCH_RESULTS,
+    PANEL_SUBSCRIPTIONS,
+    VIEW_MAIN
+} from "./routers";
 import Book from "./panels/book/Book";
 import Auth from "./modals/Auth";
+import ConfirmExit from "./modals/ConfirmExit";
+import Favorites from "./panels/favorites/Favorites";
+import Subscriptions from "./panels/subscriptions/Subscriptions";
 
 const App = () => {
     const location = useLocation();
@@ -73,6 +85,7 @@ const App = () => {
     const modal = <ModalRoot activeModal={location.getModalId()}
                              onClose={() => router.popPage()}>
         <Auth id={AUTH_MODAL_CARD} onClose={() => router.popPage()}/>
+        <ConfirmExit id={CONFIRM_EXIT_MODAL_CARD} onClose={() => router.popPage()}/>
     </ModalRoot>;
 
     return (
@@ -87,6 +100,8 @@ const App = () => {
                     <Home id={PANEL_HOME}/>
                     <SearchResults id={PANEL_SEARCH_RESULTS}/>
                     <Book id={PANEL_BOOK}/>
+                    <Favorites id={PANEL_FAVORITES}/>
+                    <Subscriptions id={PANEL_SUBSCRIPTIONS}/>
                 </View>
             </AppRoot>
         </AdaptivityProvider>
